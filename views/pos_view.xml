@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+
+	<data>
+		<record id="view_pos_config_form" model="ir.ui.view">
+    		<field name="name">pos.config.form.view</field>
+            <field name="model">pos.config</field>
+            <field name="inherit_id" ref='point_of_sale.view_pos_config_form'/>
+            <field name="arch" type="xml">
+            	<xpath expr="//group[3]" position='after'>
+            		<group string="Giftcards" name='coupon'>
+                        <group>
+                            <field name="sale_journal" required='1' domain="[('type', 'in', ['bank', 'cash'])]"/>
+                            <field name="reedem_journal" required='1' domain="[('type', 'in', ['bank', 'cash'])]"/>
+                            <field name="coupon_mode" required='1'/>
+                            <!--<field name="allow_discount" />-->
+                            <!--<field name="allow_percentage" />-->
+                            <!--<field name="allow_coupon_reedem" />-->
+                        </group>
+                    </group>
+            	</xpath>
+            </field>
+		</record>
+
+        <record id="ies_pos_order_form" model="ir.ui.view">
+    		<field name="name">ies.pos.order.form</field>
+            <field name="model">pos.order</field>
+            <field name="inherit_id" ref='point_of_sale.view_pos_pos_form'/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='lines']//form//field[@name='tax_ids']" position="after">
+                    <field name="coupon_id" attrs="{'invisible': [('coupon_id', '=', False)]}" />
+                </xpath>
+                <xpath expr="//field[@name='lines']//tree" position="attributes">
+                    <attribute name="editable"></attribute>
+                </xpath>
+                <xpath expr="//field[@name='lines']//tree//field[@name='discount']" position="replace">
+                    <field name="discount_string" string="Discount"/>
+                </xpath>
+                <xpath expr="//field[@name='lines']//form//field[@name='discount']" position="attributes">
+                    <attribute name="string">Discount</attribute>
+                </xpath>
+                <xpath expr="//field[@name='statement_ids']//tree//field[@name='journal_id']" position="after">
+                    <field name="coupon_id"/>
+                </xpath>
+            </field>
+        </record>
+
+		<record id="ies_account_journal_coupon" model="ir.ui.view">
+            <field name="name">ies.account.journal.coupon</field>
+            <field name="model">account.journal</field>
+            <field name="inherit_id" ref="account.view_account_journal_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='journal_user']" position="after">
+                    <field name="coupon" />
+                </xpath>
+            </field>
+        </record>
+        
+
+	</data>
+
+</odoo>

@@ -1,0 +1,31 @@
+#msg,#msgtxt,#ga_msg{
+	font-size: 12px;
+}
+
+#lineremove{
+	cursor: pointer;
+}
+
+.pos .control-button{
+	margin-left: 5px !important;
+}
+
+.pos .order .summary .line .subentry {
+    text-align: right;
+}
+
+.pos .order .summary .line .giftcard{
+    font-size: 16px;
+    font-weight: normal;
+    text-align: right;
+}
+
+.pos .order .summary .line .due{
+    font-size: 16px;
+    font-weight: bold;
+    text-align: right;
+}
+
+.disabled{
+    pointer-events: none;
+}

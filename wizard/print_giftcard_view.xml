@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="print_giftcards_form" model="ir.ui.view">
+            <field name="name">print.giftcards.form</field>
+            <field name="model">print.giftcards</field>
+            <field name="arch" type="xml">
+                <form string="Print Giftcards">
+                    <sheet>
+                        <p class="oe_grey">
+                            Please Choose the printer.
+                        </p>
+                        <group>
+                            <group>
+                                <field name="printer" />
+                            </group>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button string="Print" name="print_giftcards"
+                            type="object" default_focus="1" class="btn-primary" />
+                        <button string="Cancel" class="btn-default"
+                            special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <act_window
+            id="print_giftcard_action"
+            name="Print Giftcards"
+            res_model="print.giftcards"
+            src_model="product.coupon"
+            view_mode="form"
+            target="new"/>
+
+    </data>
+</odoo>

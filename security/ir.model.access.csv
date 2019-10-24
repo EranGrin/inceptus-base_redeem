@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_product_coupon,access_product_coupon,model_product_coupon,,1,1,1,0
+access_coupon_reedem,access_coupon_reedem,model_coupon_reedem,,1,1,1,0

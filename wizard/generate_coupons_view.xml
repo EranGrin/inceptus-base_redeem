@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="sale_coupon_generate" model="ir.ui.view">
+            <field name="name">sale.coupon.generate</field>
+            <field name="model">generate.coupons</field>
+            <field name="arch" type="xml">
+                <form string="Generate Coupons">
+                    <sheet>
+                        <p class="oe_grey">
+                            Please add number of giftcards/coupons to
+                            generate and press grenerate button.
+                        </p>
+                        <group>
+                            <group>
+                                <field name="coupon_qty" />
+                            </group>
+                            <group>
+                                <field name="customer" />
+                                <field name="partner_id" attrs="{'invisible': [('customer', '=', False),], 'required': [('customer', '=', True)]}"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button string="Generate" name="generate_coupons"
+                            type="object" default_focus="1" class="btn-primary" />
+                        <button string="Cancel" class="btn-default"
+                            special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+
+        <record id="generate_coupon_wiz" model="ir.actions.act_window">
+            <field name="name">Generate Coupons</field>
+            <field name="res_model">generate.coupons</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        
+        <act_window
+            id="coupon_reprint"
+            name="Reprint Giftcards"
+            res_model="generate.coupons"
+            src_model="product.coupon"
+            view_mode="form"
+            multi="True"
+            target="new"
+            key2="client_action_multi"/>
+
+    </data>
+</odoo>

@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <t t-extend="Orderline">
+        <t t-jquery=".info-list" t-operation="append">
+            <t t-if="line.get_coupon()">
+                <li class="info orderline-note">
+                    <i class='fa fa-ticket'/> <t t-esc="line.get_coupon().name" />
+                         / <i class='fa fa-credit-card'/>
+                        <t t-if='line.get_display_price()&lt;=0'>
+                            <t t-esc="widget.format_currency(line.get_coupon().rem_amount + line.get_display_price())"/>
+                        </t>
+                        <t t-if='line.get_display_price()&gt;0'>
+                            <t t-esc="widget.format_currency(line.get_coupon().rem_amount)"/>
+                        </t>
+                    <!--<i class="fa fa-times pull-right" id="lineremove"/>-->
+                </li>
+            </t>
+        </t>
+        <t t-jquery="li.info:contains(at)" t-operation="replace">
+            <t t-if="line.get_coupon()">
+                <li class="info">
+                    <em>
+                        <t t-esc="line.get_quantity_str()" />
+                    </em>
+                    <t t-esc="line.get_unit().name" />
+                    for
+                    <t t-if="line.get_coupon().type === 'd' &amp;&amp; line.get_coupon().type === 'f'">
+                        <t t-esc="widget.format_currency(line.get_unit_display_price(),'Product Price')" />
+                        Credit
+                    </t>
+                    <t t-if="line.get_coupon().type === 'p'">
+                        <t t-esc="line.get_unit_display_price()" /> %
+                    </t>
+                    <i class="fa fa-times pull-right" id="lineremove"/>
+                </li>
+            </t>
+            <t t-else="">
+                <li class="info">
+                    <em>
+                        <t t-esc="line.get_quantity_str()" />
+                    </em>
+                    <t t-esc="line.get_unit().name" />
+                    at
+                    <t t-esc="widget.format_currency(line.get_unit_display_price(),'Product Price')" />
+                    /
+                    <t t-esc="line.get_unit().name" />
+                    <i class="fa fa-times pull-right" id="lineremove"/>
+                </li>
+            </t>
+
+        </t>
+        <t t-jquery="li.info:contains(discount)" t-operation="replace">
+            <t t-if="line.get_discount() !== 0">
+                <li class="info">
+                    With a
+                    <em>
+                        <t t-esc="line.get_discount_str()" />
+                    </em>
+                    discount
+                </li>
+            </t>
+        </t>
+    </t>
+
+    <t t-name="RedeemButton">
+        <!--implemented in child modules-->
+    </t>
+
+    <t t-extend="Product">
+        <t t-jquery='.price-tag' t-operation="replace">
+            <t t-if="product.search_gc and product.search_gc.amount">
+                <span class="price-tag">
+                   <t t-esc="widget.format_currency(product.search_gc.amount,'Product Price')"/>
+                </span>
+            </t>
+            <t t-else="">
+                <span class="price-tag">
+                    <t t-esc="widget.format_currency(product.price,'Product Price')"/>
+                </span>
+            </t>
+        </t>
+    </t>
+
+    <t t-name="POSCouponLoad">
+        <div class="modal-dialog">
+            <div class="popup popup-coupon" style="width: 500px;height: 300px;">
+                <p class="title"><t t-esc=" widget.options.title "/></p>
+                <p class="body">
+                    <div id='msg'></div>
+                    <input type="text" name="giftcard_input" id="giftcard_input" style="width: 300px;text-align: center;"/>
+                    <div id='msgtxt'></div>
+                </p>
+                <div class="footer centered">
+                    <div class="button cancel">
+                        Cancel
+                    </div>
+                    <div class="button confirm disabled">
+                        Ok
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+    
+    
+    <t t-extend="PaymentScreen-Paymentmethods">
+    	<t t-jquery='.paymentmethod' t-operation="replace">
+    		<t t-if="!cashregister.journal.coupon">
+	    		<div class="button paymentmethod" t-att-data-id="cashregister.journal_id[0]">
+	                 <t t-esc="cashregister.journal_id[1]" />
+	            </div>
+            </t>
+    	</t>
+    </t>
+
+
+    <t t-extend="PaymentScreen-Paymentlines">
+        <t t-jquery='.delete-button' t-operation="replace">
+            <t t-if="line.is_coupon">
+                <td> </td>
+            </t>
+            <t t-if="!line.is_coupon">
+                <td class='delete-button' t-att-data-cid='line.cid'> <i class='fa fa-times-circle' /> </td>
+            </t>
+        </t>
+        <t t-jquery='.paymentline extra' t-operation="replace">
+            <t t-if="!line.is_coupon">
+                <tr class='paymentline extra' t-att-data-cid='0'>
+                    <td class='col-due'> <t t-esc='widget.format_currency_no_symbol(extradue)' /> </td>
+                </tr>
+            </t>
+        </t>
+    </t>
+
+    <t t-extend="OrderWidget">
+        <t t-jquery='.subentry' t-operation="before">
+            <div class='giftcard'>Redeemed: <span class="value">0.00€</span></div>
+            <div class='due'>Due: <span class="value">0.00€</span></div>
+        </t>
+    </t>
+    
+    
+    <t t-name="GiftcardAdd">
+        <div class="modal-dialog">
+            <div class="popup popup-coupon" style="width: 500px;height: 300px;">
+                <p class="title"><t t-esc=" widget.options.title "/></p>
+                <p class="body">
+                    <div id='ga_msg'></div>
+                    <input type="text" name="giftcard_input" id="giftcard_input" style="width: 300px;text-align: center;"/>
+                </p>
+                <div class="footer centered">
+                    <div class="button cancel">
+                        Cancel
+                    </div>
+                    <div class="button confirm">
+                        Ok
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="DynamicGiftcard">
+        <div class="modal-dialog">
+            <div class="popup popup-coupon" style="width: 500px;height: 300px;">
+                <p class="title"><t t-esc=" widget.options.title "/></p>
+                <p class="body">
+                    <input type="text" name="giftcard_input" id="giftcard_input" style="width: 300px;text-align: center;"/>
+                </p>
+                <div class="footer centered">
+                    <div class="button cancel">
+                        Cancel
+                    </div>
+                    <div class="button confirm">
+                        Ok
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+
+    
+    <t t-extend="PosTicket">
+        <t t-jquery='.receipt-orderlines>tr' t-operation="replace">
+            <tr t-foreach="orderlines" t-as="orderline">
+                <td>
+                    <t t-esc="orderline.get_product().display_name"/>
+                    <t t-if="orderline.coupon">
+                        <div class="pos-disc-font">
+                            Card Number : <t t-esc="orderline.coupon.name"/>
+                        </div>
+                        <div class="pos-disc-font">
+                            Credit : <t t-esc="orderline.coupon.amount"/>
+                        </div>
+                    </t>
+                    <t t-if="orderline.get_discount() > 0">
+                        <div class="pos-disc-font">
+                            With a <t t-esc="orderline.get_discount()"/>% discount
+                        </div>
+                    </t>
+                </td>
+                <td class="pos-right-align">
+                    <t t-esc="orderline.get_quantity_str_with_unit()"/>
+                </td>
+                <td class="pos-right-align">
+                    <t t-esc="widget.format_currency(orderline.get_display_price())"/>
+                </td>
+            </tr>
+        </t>
+    </t>
+
+</templates>
+    
