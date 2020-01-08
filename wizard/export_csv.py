@@ -10,12 +10,13 @@ import base64
 
 class ExportCSV(models.TransientModel):
     _name = 'export.csv'
+    _description = "CSV Export"
 
     datas = fields.Binary('CSV file')
     file_name = fields.Char("File Name", default="DataExport.csv")
     export = fields.Boolean()
 
-    @api.multi
+    # @api.multi
     def export_data(self):
         tmp_dir = tempfile.mkdtemp()
         export_file = tmp_dir + '/csv_data.csv'

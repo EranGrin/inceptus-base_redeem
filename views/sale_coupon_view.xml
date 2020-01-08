@@ -197,6 +197,12 @@
             <field name="arch" type="xml">
                 <form string="Giftcard Template">
                     <header>
+                        <field
+                            name="discount_type"
+                            attrs="{
+                                'readonly': [('generated', '=', True)],
+                            }" placeholder="Choose Type"/>
+                        <field name="is_voucher" invisible="1" />
                         <button string="Generate Giftcards" type="object" context="{'giftcard':1}"
                             name="generate_coupon_wiz" attrs="{'invisible': ['|', ('discount_type', 'in', ['p']), ('is_voucher', '=', True)]}"/>
                         <button string="Generate Coupons" type="object" context="{'coupon':1}"
@@ -225,7 +231,7 @@
                             <!--</button>-->
 
                         </div>
-                        <field name="image_medium" widget="image"
+                        <field name="image_1920" widget="image"
                             class="oe_avatar" />
                         <div class="oe_title">
                             <label class="oe_edit_only" for="name"
@@ -256,9 +262,9 @@
                                 <group>
 
                                     <group name="discount">
-                                        <field name="discount_type"
+                                        <!-- <field name="discount_type"
                                             attrs="{'readonly': [('generated', '=', True)], 'invisible': [('discount_type', 'in', ['p'])]}"
-                                            required='1' placeholder="Choose Type"/>
+                                            required='1' placeholder="Choose Type"/> -->
                                         <field name="discount_amount"
                                             attrs="{'readonly': [('generated', '=', True)], 'invisible': ['|', ('discount_type', 'in', ['d', 'p']), ('discount_type', '=', False)],
                                             'required': [('discount_type', '=', 'f')]}" invisible="context.get('hide_discount_amount', True)" />
@@ -273,7 +279,7 @@
                                     </group>
 
                                     <group name="group_general">
-                                        <field name="expiry_type" widget="radio"/>
+                                        <field name="expiry_type" widget="radio" required="1" />
                                         <label for="expiry_interval" attrs="{'invisible': ['|', ('expiry_type', '=', False),('expiry_type', '=', 'd')]}"/>
                                         <div class="o_row mr16" attrs="{'invisible': ['|', ('expiry_type', '=', False),('expiry_type', '=', 'd')]}">
                                             <field name="expiry_interval" attrs="{'readonly': [('generated', '=', True),], 'required': [('expiry_type', '=', 'as')]}" />

@@ -9,6 +9,7 @@ from random import randrange
 
 class ProductTemplate(models.TransientModel):
     _name = 'generate.coupons'
+    _description = "Coupons Generate"
 
     coupon_qty = fields.Integer('Number of Coupons', default=1)
     customer = fields.Boolean('Assign to customer?', help="if assigned to customer, generated coupon will be automatically sold.")
@@ -40,8 +41,7 @@ class ProductTemplate(models.TransientModel):
         elif user.company_id.code_format == 'upca':
             return self.generate_coupon_number('5')
 
-
-    @api.multi
+    # @api.multi
     def generate_coupons(self):
         coupon_env = self.env['product.coupon']
         product_id = self.env['product.template'].browse(self._context.get('active_id'))

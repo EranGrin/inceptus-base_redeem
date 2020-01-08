@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <data>
+
         <record id="print_giftcards_form" model="ir.ui.view">
             <field name="name">print.giftcards.form</field>
             <field name="model">print.giftcards</field>
@@ -30,9 +30,8 @@
             id="print_giftcard_action"
             name="Print Giftcards"
             res_model="print.giftcards"
-            src_model="product.coupon"
+            binding_model="product.coupon"
             view_mode="form"
             target="new"/>
 
-    </data>
 </odoo>

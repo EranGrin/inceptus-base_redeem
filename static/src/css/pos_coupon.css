@@ -1,13 +1,13 @@
 #msg,#msgtxt,#ga_msg{
-	font-size: 12px;
+    font-size: 12px;
 }
 
 #lineremove{
-	cursor: pointer;
+    cursor: pointer;
 }
 
 .pos .control-button{
-	margin-left: 5px !important;
+    margin-left: 5px !important;
 }
 
 .pos .order .summary .line .subentry {

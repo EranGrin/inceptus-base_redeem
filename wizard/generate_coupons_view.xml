@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <data>
+
         <record id="sale_coupon_generate" model="ir.ui.view">
             <field name="name">sale.coupon.generate</field>
             <field name="model">generate.coupons</field>
@@ -35,7 +35,6 @@
         <record id="generate_coupon_wiz" model="ir.actions.act_window">
             <field name="name">Generate Coupons</field>
             <field name="res_model">generate.coupons</field>
-            <field name="view_type">form</field>
             <field name="view_mode">form</field>
             <field name="target">new</field>
         </record>
@@ -45,11 +44,8 @@
             id="coupon_reprint"
             name="Reprint Giftcards"
             res_model="generate.coupons"
-            src_model="product.coupon"
+            binding_model="product.coupon"
             view_mode="form"
-            multi="True"
-            target="new"
-            key2="client_action_multi"/>
+            target="new"/>
 
-    </data>
 </odoo>

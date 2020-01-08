@@ -14,7 +14,7 @@ class ProductTemplate(models.Model):
 
     _inherit = ["product.template", "ies.base"]
 
-    @api.one
+    # @api.one
     @api.constrains('barcode')
     def check_barcode(self):
         coupon_barcode = self.env['product.coupon'].search([('name', '=', self.barcode)])
@@ -84,7 +84,7 @@ class ProductTemplate(models.Model):
         if date_after_month:
             return date_after_month.strftime(DF)
 
-    @api.multi
+    # @api.multi
     @api.depends('expiry_interval', 'expiry_unit')
     def _get_expires_on(self):
         for rec in self:
@@ -107,7 +107,7 @@ class ProductTemplate(models.Model):
     expiry_type = fields.Selection([
         ('as', 'After Date of Sale'),
         ('d', 'On Specific Date')
-    ], 'Expiry Type', required=True, help="")
+    ], 'Expiry Type', help="")
 
     expiry_interval = fields.Integer('Expires After')
     expiry_unit = fields.Selection([('days', "Days"), ('weeks', "Weeks"), ('months', "Months"), ('years', "Years")], )
@@ -171,7 +171,8 @@ class ProductTemplate(models.Model):
 
     @api.model
     def search(self, args, offset=0, limit=None, order=None, count=False):
-        if not args: args = []
+        if not args:
+            args = []
         if not self._context.get('default_is_coupon'):
             args.append(('is_coupon', '=', False))
         res = super(ProductTemplate, self).search(args, offset, limit, order, count)
@@ -190,7 +191,7 @@ class ProductTemplate(models.Model):
                 rec.pop('supplier_taxes_id')
         return rec
 
-    @api.multi
+    # @api.multi
     def generate_coupon_wiz(self):
         name = "Generate"
         if self._context.get('giftcard'):
@@ -213,6 +214,7 @@ class ProductCoupon(models.Model):
     _inherit = ["ies.base"]
 
     _order = 'create_date desc'
+    _description = "Product Coupon"
 
     name = fields.Char('Name')
     product_id = fields.Many2one('product.template', "Template", help="The related template")
@@ -240,12 +242,13 @@ class ProductCoupon(models.Model):
 
     coupon_type = fields.Selection([('gc', 'Gift Card'), ('c', 'Coupon'), ('v', 'Voucher'), ('cn', 'Credit Note')])
     cart_limit = fields.Float('Min. Cart Limit', help='Minimum Cart Amount, 0.0 for no min. cart value')
-    invoice_id = fields.Many2one('account.invoice', "Related Invoice")
+    # invoice_id = fields.Many2one('account.invoice', "Related Invoice")
+    invoice_id = fields.Many2one('account.move', "Related Invoice")
 
     # is_voucher = fields.Boolean('Is Voucher?')
     # is_credit_note = fields.Boolean('Is Credit Note?')
 
-    @api.multi
+    # @api.multi
     def unlink(self):
         for rec in self:
             if rec.state not in ['o']:
@@ -257,6 +260,7 @@ class CouponReedem(models.Model):
     _name = 'coupon.reedem'
 
     _inherit = ["ies.base"]
+    _description = "Coupon Reedem"
 
     name = fields.Char('Name')
     coupon_id = fields.Many2one('product.coupon', 'Coupon')

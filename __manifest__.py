@@ -13,7 +13,7 @@
 
     'category': 'Sale',
     'version': '1.0',
-    'depends': ['sale', 'point_of_sale', 'ies_base'],
+    'depends': ['sale', 'point_of_sale', 'inceptus-base'],
     'data': [
         'security/ir.model.access.csv',
         'data/pos_data.xml',
@@ -27,10 +27,10 @@
         'views/report_invoice.xml',
         'views/partner_view.xml',
     ],
-    
+
     'qweb': ['static/src/xml/*.xml'],
 
     'installable': True,
     'auto_install': False,
-    'application': False,
+    'application': True,
 }

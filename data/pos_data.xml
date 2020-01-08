@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <odoo>
+
     <data noupdate="1">
         <record id="ies_pos_giftcard_journal" model="account.journal">
             <field name="name">Giftcard Journal</field>
             <field name="code">GCJ</field>
             <field name="type">cash</field>
             <field name="sequence">20</field>
-            <field name="journal_user" eval='True' />
+            <!-- <field name="journal_user" eval='True' /> -->
             <field name="coupon" eval='True' />
         </record>
 
 
-        <record id="product_uom_piece" model="product.uom">
-            <field name="category_id" ref="product.product_uom_categ_unit" />
+        <!-- <record id="product_uom_piece" model="uom.uom">
+            <field name="category_id" ref="uom.product_uom_categ_unit" />
             <field name="name">Unit(s)</field>
             <field name="factor" eval="1.0" />
             <field name="rounding" eval="0.001" />
-        </record>
+        </record> -->
 
     </data>
 

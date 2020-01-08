@@ -41,7 +41,7 @@ class PosSession(models.Model):
             'user_id': self.env.user.id,
             'name': res.name
         }
-        coupon_statement = ABS.with_context(ctx).sudo(uid).create(st_values)
+        coupon_statement = ABS.with_context(ctx).with_user(uid).create(st_values)
         res.statement_ids = [(4, coupon_statement.id)]
         return res
 
@@ -72,7 +72,7 @@ class POSOrderLine(models.Model):
 
     _inherit = ["pos.order.line", "ies.base"]
 
-    @api.multi
+    # @api.multi
     @api.depends('discount', 'product_id', 'qty')
     def _get_discount_string(self):
         for rec in self:

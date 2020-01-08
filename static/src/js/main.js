@@ -1,4 +1,4 @@
-odoo.define('ies_base_redeem.ies_base_redeem', function (require) {
+odoo.define('inceptus-base_redeem.inceptus-base_redeem', function (require) {
 	"use strict";
 	var core = require('web.core');
 	var QWeb = core.qweb;

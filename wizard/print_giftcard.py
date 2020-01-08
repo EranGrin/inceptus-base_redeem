@@ -7,9 +7,10 @@ from odoo import models, fields, api, _
 
 class ProductTemplate(models.TransientModel):
     _name = 'print.giftcards'
+    _description = "Print Giftcards"
 
-    printer = fields.Selection([('A','Printer A'), ('B','Printer B')], "Printer")
+    printer = fields.Selection([('A', 'Printer A'), ('B', 'Printer B')], "Printer")
 
-    @api.multi
+    # @api.multi
     def print_giftcards(self):
         pass

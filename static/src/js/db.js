@@ -1,4 +1,4 @@
-odoo.define('ies_base_redeem.DB', function (require) {
+odoo.define('inceptus-base_redeem.DB', function (require) {
     "use strict";
 
     var PosDB = require('point_of_sale.DB');
