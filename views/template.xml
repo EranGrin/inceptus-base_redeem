@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <template id="ies_assets" inherit_id="point_of_sale.assets" name="point_of_sale assets">
+
+    <template id="ies_assets_reedem_css" inherit_id="point_of_sale.assets">
         <xpath expr="." position="inside">
             <link rel="stylesheet" type="text/css" href="/inceptus-base_redeem/static/src/css/pos_coupon.css"/>
+        </xpath>
+    </template>
+
+    <template id="ies_assets_reedem" inherit_id="point_of_sale.assets" name="point_of_sale assets">
+        <xpath expr="." position="inside">
             <script type="text/javascript" src="/inceptus-base_redeem/static/src/js/db.js"></script>
             <script type="text/javascript" src="/inceptus-base_redeem/static/src/js/main.js"></script>
         </xpath>

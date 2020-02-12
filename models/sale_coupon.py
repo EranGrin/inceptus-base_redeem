@@ -181,8 +181,8 @@ class ProductTemplate(models.Model):
     @api.model
     def default_get(self, fields):
         rec = super(ProductTemplate, self).default_get(fields)
-        if rec.get('is_coupon') and self.env.ref('ies_base_redeem.product_uom_piece'):
-            ref = self.env.ref('ies_base_redeem.product_uom_piece')
+        if rec.get('is_coupon') and self.env.ref('inceptus-base_redeem.product_uom_piece'):
+            ref = self.env.ref('inceptus-base_redeem.product_uom_piece')
             rec.update({'uom_id': ref.id, 'uom_po_id': ref.id})
         if self._context.get('giftcard'):
             if rec.get('taxes_id'):

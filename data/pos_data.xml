@@ -7,17 +7,16 @@
             <field name="code">GCJ</field>
             <field name="type">cash</field>
             <field name="sequence">20</field>
-            <!-- <field name="journal_user" eval='True' /> -->
             <field name="coupon" eval='True' />
         </record>
 
-
-        <!-- <record id="product_uom_piece" model="uom.uom">
+        <record id="product_uom_piece" model="uom.uom">
             <field name="category_id" ref="uom.product_uom_categ_unit" />
-            <field name="name">Unit(s)</field>
+            <field name="name">Piece</field>
             <field name="factor" eval="1.0" />
-            <field name="rounding" eval="0.001" />
-        </record> -->
+            <field name="rounding" eval="0.01" />
+            <field name="uom_type">bigger</field>
+        </record>
 
     </data>
 

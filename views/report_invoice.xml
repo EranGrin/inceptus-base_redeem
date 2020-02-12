@@ -2,7 +2,7 @@
 <odoo>
     <data>
         <template id="ies_report_invoice_document" inherit_id="account.report_invoice_document">
-            <xpath expr="//tbody[@class='invoice_tbody']//td[1]" position="replace">
+            <xpath expr="//tbody[hasclass('invoice_tbody')]//td[1]" position="replace">
                 <td><span t-field="l.name"/>
                     <t t-if="l.coupon_id">
                         : <span t-field="l.coupon_id.name"/>

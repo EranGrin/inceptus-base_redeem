@@ -739,6 +739,22 @@ odoo.define('inceptus-base_redeem.inceptus-base_redeem', function (require) {
 	    },
 	});
 
+    models.Orderline.include({
+        initialize: function(attr, options) {
+            this.super(attr, options)
+            if (this.coupon){
+                this.coupon = this.coupon;
+            }
+        },
+        set_coupon: function(coupon){
+            this.coupon= coupon;
+            this.trigger('change',this);
+        },
+        get_coupon: function(){
+            return this.coupon;
+        },
+    });
+
 	var _super_orderline = models.Orderline.prototype;
 	models.Orderline = models.Orderline.extend({
 	    initialize: function(attr, options) {
@@ -776,7 +792,7 @@ odoo.define('inceptus-base_redeem.inceptus-base_redeem', function (require) {
 	        this.coupon= coupon;
 	        this.trigger('change',this);
 	    },
-	    get_coupon: function(coupon){
+	    get_coupon: function(){
 	        return this.coupon;
 	    },
 	    

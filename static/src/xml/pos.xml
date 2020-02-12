@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates id="template" xml:space="preserve">
 
-    <t t-extend="Orderline">
+   <!--  <t t-extend="Orderline">
         <t t-jquery=".info-list" t-operation="append">
             <t t-if="line.get_coupon()">
                 <li class="info orderline-note">
@@ -13,7 +13,6 @@
                         <t t-if='line.get_display_price()&gt;0'>
                             <t t-esc="widget.format_currency(line.get_coupon().rem_amount)"/>
                         </t>
-                    <!--<i class="fa fa-times pull-right" id="lineremove"/>-->
                 </li>
             </t>
         </t>
@@ -61,7 +60,7 @@
                 </li>
             </t>
         </t>
-    </t>
+    </t> -->
 
     <t t-name="RedeemButton">
         <!--implemented in child modules-->
@@ -69,15 +68,23 @@
 
     <t t-extend="Product">
         <t t-jquery='.price-tag' t-operation="replace">
+            <span t-esc="product.search_gc" />
             <t t-if="product.search_gc and product.search_gc.amount">
                 <span class="price-tag">
                    <t t-esc="widget.format_currency(product.search_gc.amount,'Product Price')"/>
                 </span>
             </t>
             <t t-else="">
-                <span class="price-tag">
-                    <t t-esc="widget.format_currency(product.price,'Product Price')"/>
-                </span>
+                <t t-if="!product.to_weight">
+                    <span class="price-tag">
+                        <t t-esc="widget.format_currency(product.get_price(pricelist, 1),'Product Price')"/>
+                    </span>
+                </t>
+                <t t-if="product.to_weight">
+                    <span class="price-tag">
+                        <t t-esc="widget.format_currency(product.get_price(pricelist, 1),'Product Price')+'/'+widget.pos.units_by_id[product.uom_id[0]].name"/>
+                    </span>
+                </t>
             </t>
         </t>
     </t>
@@ -106,11 +113,11 @@
     
     <t t-extend="PaymentScreen-Paymentmethods">
     	<t t-jquery='.paymentmethod' t-operation="replace">
-    		<t t-if="!cashregister.journal.coupon">
+    		<!-- <t t-if="!cashregister.journal.coupon">
 	    		<div class="button paymentmethod" t-att-data-id="cashregister.journal_id[0]">
 	                 <t t-esc="cashregister.journal_id[1]" />
 	            </div>
-            </t>
+            </t> -->
     	</t>
     </t>
 

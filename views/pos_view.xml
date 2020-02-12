@@ -18,12 +18,12 @@
                                 <div class="content-group mt16">
                                     <div class="row mt16">
                                         <label string="Sale Journal" for="sale_journal" class="col-lg-3 o_light_label"/>
-                                        <field name="sale_journal" required='1' domain="[('type', '=', 'sale')]"
+                                        <field name="sale_journal" required='1' domain="[('type', '=', 'cash')]"
                                             options="{'no_create': True}"/>
                                     </div>
                                     <div class="row mt16">
                                         <label string="Reedem Journal" for="reedem_journal" class="col-lg-3 o_light_label"/>
-                                        <field name="reedem_journal" required='1' domain="[('type', '=', 'sale')]"
+                                        <field name="reedem_journal" required='1' domain="[('type', '=', 'cash')]"
                                             options="{'no_create': True}"/>
                                     </div>
                                     <div class="row mt16">
