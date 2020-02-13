@@ -1062,20 +1062,20 @@ odoo.define('inceptus-base_redeem.inceptus-base_redeem', function (require) {
 
 	});
 
-    screens.PaymentScreenWidget.include({
-        click_numpad: function(button) {
-            var order = this.pos.get_order();
-            var paymentlines = this.pos.get_order().get_paymentlines();
-            if (order.selected_paymentline.is_coupon){
-                this.gui.show_popup('error',{
-                    title: _t('Not Allowed!'),
-                    body:  _t('Giftcard Payments can not be altered/removed!'),
-                });
-				return;
-            }
-            this._super(button);
-        },
-    });
+    // screens.PaymentScreenWidget.include({
+    //     click_numpad: function(button) {
+    //         var order = this.pos.get_order();
+    //         var paymentlines = this.pos.get_order().get_paymentlines();
+    //         if (order.selected_paymentline.is_coupon){
+    //             this.gui.show_popup('error',{
+    //                 title: _t('Not Allowed!'),
+    //                 body:  _t('Giftcard Payments can not be altered/removed!'),
+    //             });
+				// return;
+    //         }
+    //         this._super(button);
+    //     },
+    // });
 
     screens.ActionpadWidget.include({
         renderElement: function() {
