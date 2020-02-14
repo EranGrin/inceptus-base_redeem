@@ -213,7 +213,7 @@ class ProductCoupon(models.Model):
 
     _inherit = ["ies.base"]
 
-    _order = 'create_date desc'
+    # _order = 'create_date desc'
     _description = "Product Coupon"
 
     name = fields.Char('Name')

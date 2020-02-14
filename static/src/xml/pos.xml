@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates id="template" xml:space="preserve">
 
-   <!--  <t t-extend="Orderline">
+    <t t-extend="Orderline">
         <t t-jquery=".info-list" t-operation="append">
             <t t-if="line.get_coupon()">
                 <li class="info orderline-note">
@@ -60,7 +60,7 @@
                 </li>
             </t>
         </t>
-    </t> -->
+    </t>
 
     <t t-name="RedeemButton">
         <!--implemented in child modules-->
@@ -110,18 +110,18 @@
         </div>
     </t>
     
-    
+    <!-- 
     <t t-extend="PaymentScreen-Paymentmethods">
     	<t t-jquery='.paymentmethod' t-operation="replace">
-    		<!-- <t t-if="!cashregister.journal.coupon">
+    		<t t-if="!cashregister.journal.coupon">
 	    		<div class="button paymentmethod" t-att-data-id="cashregister.journal_id[0]">
 	                 <t t-esc="cashregister.journal_id[1]" />
 	            </div>
-            </t> -->
+            </t>
     	</t>
     </t>
 
-
+ -->
     <t t-extend="PaymentScreen-Paymentlines">
         <t t-jquery='.delete-button' t-operation="replace">
             <t t-if="line.is_coupon">

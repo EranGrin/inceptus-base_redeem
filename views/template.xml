@@ -10,7 +10,7 @@
     <template id="ies_assets_reedem" inherit_id="point_of_sale.assets" name="point_of_sale assets">
         <xpath expr="." position="inside">
             <script type="text/javascript" src="/inceptus-base_redeem/static/src/js/db.js"></script>
-            <script type="text/javascript" src="/inceptus-base_redeem/static/src/js/main.js"></script>
+            <script type="text/javascript" src="/inceptus-base_redeem/static/src/js/redeem.js"></script>
         </xpath>
     </template>
 </odoo>

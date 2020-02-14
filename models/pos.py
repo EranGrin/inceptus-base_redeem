@@ -138,7 +138,7 @@ class POSOrder(models.Model):
         return coupon_rec
 
     @api.model
-    def create_from_ui(self, orders):
+    def create_from_ui(self, orders, draft=False):
         for order in orders:
             if not order.get('data').get('lines'):
                 continue
@@ -176,7 +176,7 @@ class POSOrder(models.Model):
                         'shop_id': False
                     }))
             order.get('data')['coupon_reedem_ids'] = reedem_lines
-        res = super(POSOrder, self).create_from_ui(orders)
+        res = super(POSOrder, self).create_from_ui(orders,  draft=draft)
         return res
 
     @api.model

@@ -1,10 +1,10 @@
-odoo.define('inceptus-base_redeem.inceptus-base_redeem', function (require) {
+odoo.define('inceptus-base_redeem.redeem', function (require) {
 	"use strict";
 	var core = require('web.core');
 	var QWeb = core.qweb;
     var gui = require('point_of_sale.gui');
 	var models = require('point_of_sale.models');
-	var Model = require('web.DataModel');
+	var Model = require('web.BasicModel');
 	var screens = require('point_of_sale.screens');
 	var PosDB = require('point_of_sale.DB');
 	var PopupWidget = require('point_of_sale.popups');
@@ -52,6 +52,9 @@ odoo.define('inceptus-base_redeem.inceptus-base_redeem', function (require) {
                 'weight': _.bind(self.barcode_product_action, self),
                 'price': _.bind(self.barcode_product_action, self),
                 'credit': _.bind(self.card_reader_action, self),
+                'client' : _.bind(self.barcode_client_action, self),
+                'discount': _.bind(self.barcode_discount_action, self),
+                'error'   : _.bind(self.barcode_error_action, self),
             });
 
         },
@@ -218,28 +221,28 @@ odoo.define('inceptus-base_redeem.inceptus-base_redeem', function (require) {
 				}
 			}
 			else{
-				var CouponModel = new Model('product.coupon');
+				// var CouponModel = new Model('product.coupon');
     			var domain = [['name', 'ilike', parsed_code]];
-    			CouponModel.call('search_read', [domain, ['name', 'product_id', 'rel_product_id', 'amount', 'rem_amount',
-           	     'percentage', 'expire_date', 'state', 'type', 'single_use', 'sale_price','coupon_type', 'partner_id']]).then(function (result) {
-     				if (result && result.length == 1) {
-     					var coupon = result[0];
-     					if (!coupon){
-    						return false;
-    					}
-    					if (coupon.coupon_type === 'v'){return false}
-     					if (coupon.type === 'd'){
-     					    if (coupon.state == 's'){
-                                return this.gui.show_popup('error',_t('Giftcard can not be sold more then once.'));
-                            }
-     						self.ask_amount(coupon);
-     					}
-     					else{
-     						self.add_coupon_product(coupon);
-        					return true;
-     					}
-     				}
-           	     });
+    			// CouponModel.call('search_read', [domain, ['name', 'product_id', 'rel_product_id', 'amount', 'rem_amount',
+       //     	     'percentage', 'expire_date', 'state', 'type', 'single_use', 'sale_price','coupon_type', 'partner_id']]).then(function (result) {
+     		// 		if (result && result.length == 1) {
+     		// 			var coupon = result[0];
+     		// 			if (!coupon){
+    			// 			return false;
+    			// 		}
+    			// 		if (coupon.coupon_type === 'v'){return false}
+     		// 			if (coupon.type === 'd'){
+     		// 			    if (coupon.state == 's'){
+       //                          return this.gui.show_popup('error',_t('Giftcard can not be sold more then once.'));
+       //                      }
+     		// 				self.ask_amount(coupon);
+     		// 			}
+     		// 			else{
+     		// 				self.add_coupon_product(coupon);
+       //  					return true;
+     		// 			}
+     		// 		}
+       //     	     });
 			}
 		},
 
@@ -261,7 +264,7 @@ odoo.define('inceptus-base_redeem.inceptus-base_redeem', function (require) {
         model:  'product.coupon',
         fields: ['name', 'product_id', 'rel_product_id', 'amount', 'rem_amount',
         	     'percentage', 'expire_date', 'state', 'type', 'single_use','coupon_type', 'cart_limit', 'partner_id'],
-        order:  ['id'],
+        // order:  ['id'],
         domain: [],
         loaded: function(self, coupons){
             self.db.add_coupons(coupons);
@@ -338,6 +341,9 @@ odoo.define('inceptus-base_redeem.inceptus-base_redeem', function (require) {
                 'weight': _.bind(self.barcode_product_action, self),
                 'price': _.bind(self.barcode_product_action, self),
                 'credit': _.bind(self.card_reader_action, self),
+                'client' : _.bind(self.barcode_client_action, self),
+                'discount': _.bind(self.barcode_discount_action, self),
+                'error'   : _.bind(self.barcode_error_action, self),
             });
         },
 
@@ -418,54 +424,54 @@ odoo.define('inceptus-base_redeem.inceptus-base_redeem', function (require) {
     			//////////////////////////////////////////////////////////
     		}
     		else if (this.pos.config.coupon_mode ==='on'){
-    			var CouponModel = new Model('product.coupon');
+    			// var CouponModel = new Model('product.coupon');
     			var domain = [['name', 'ilike', vals]];
-    			CouponModel.call('search_read', [domain, ['name', 'product_id', 'rel_product_id', 'amount', 'rem_amount',
-           	     'percentage', 'expire_date', 'state', 'type', 'single_use', 'coupon_type', 'cart_limit', 'partner_id']]).then(function (result) {
-    				if (result && result.length == 1) {
-    					var coupon = result[0];
-    					//////////////////////////////////////////////////////
-    					if (coupon){
-    						self.disable_confirm(true);
-    	        			if (coupon.expire_date && new Date() > new Date(coupon.expire_date)){
-    	            			coupon.state = 'e'
-    	            		}
-    	            		if(coupon.state === 's' || coupon.state === 'pr' && !coupon.single_use){
-    	            			self.append_msg("<p>Redeem Code is valid!</p>", false);
-    	            			self.disable_confirm(false);
-    	            			if(coupon.type === 'f' || coupon.type === 'd'){
-									$('#msgtxt').append(_t("<p>Total Balance : "+ self.format_currency(coupon.amount) +"</p>"+
-											"<p>Available Balance : "+ self.format_currency(coupon.rem_amount) + "</p>"));
-									if (coupon.expire_date){
-										$('#msgtxt').append(_t("<p>Expiry Date : "+ coupon.expire_date + "</p>"));
-									}
-								}else if(coupon.type === 'p'){
-									$('#msgtxt').append(_t("<p>Discount Available : "+ coupon.percentage+"% </p>"));
-									if (coupon.expire_date){
-										$('#msgtxt').append(_t("<p>Expiry Date : "+ coupon.expire_date + "</p>"));
-									}
-								}
-    	            		}else if(coupon.state === 'r'){
-    	            			self.append_msg("<p>Redeem Code already reedemed!</p>", true);
-    	            		}else if(coupon.state === 'e'){
-    	            			self.append_msg("<p>Redeem Code will expired on " + coupon.expire_date + ".</p>", true);
-    	            		}else if (coupon.state === 'pr' && coupon.single_use){
-								self.append_msg("<p>Redeem Code can not be reedem more than one time.</p>", true);
-							}
-    	            		else{
-    	            			self.append_msg("<p>Redeem Code is not available!</p>", true);
-    	            		}
-    	        		}
-    	    			else{
-    	    				self.append_msg("<p>Redeem Code does not exist!</p>", true);
-    	        		}
-    					//////////////////////////////////////////////////////////
-    				}
-    			});
+    			// CouponModel.call('search_read', [domain, ['name', 'product_id', 'rel_product_id', 'amount', 'rem_amount',
+       //     	     'percentage', 'expire_date', 'state', 'type', 'single_use', 'coupon_type', 'cart_limit', 'partner_id']]).then(function (result) {
+    			// 	if (result && result.length == 1) {
+    			// 		var coupon = result[0];
+    			// 		//////////////////////////////////////////////////////
+    			// 		if (coupon){
+    			// 			self.disable_confirm(true);
+    	  //       			if (coupon.expire_date && new Date() > new Date(coupon.expire_date)){
+    	  //           			coupon.state = 'e'
+    	  //           		}
+    	  //           		if(coupon.state === 's' || coupon.state === 'pr' && !coupon.single_use){
+    	  //           			self.append_msg("<p>Redeem Code is valid!</p>", false);
+    	  //           			self.disable_confirm(false);
+    	  //           			if(coupon.type === 'f' || coupon.type === 'd'){
+							// 		$('#msgtxt').append(_t("<p>Total Balance : "+ self.format_currency(coupon.amount) +"</p>"+
+							// 				"<p>Available Balance : "+ self.format_currency(coupon.rem_amount) + "</p>"));
+							// 		if (coupon.expire_date){
+							// 			$('#msgtxt').append(_t("<p>Expiry Date : "+ coupon.expire_date + "</p>"));
+							// 		}
+							// 	}else if(coupon.type === 'p'){
+							// 		$('#msgtxt').append(_t("<p>Discount Available : "+ coupon.percentage+"% </p>"));
+							// 		if (coupon.expire_date){
+							// 			$('#msgtxt').append(_t("<p>Expiry Date : "+ coupon.expire_date + "</p>"));
+							// 		}
+							// 	}
+    	  //           		}else if(coupon.state === 'r'){
+    	  //           			self.append_msg("<p>Redeem Code already reedemed!</p>", true);
+    	  //           		}else if(coupon.state === 'e'){
+    	  //           			self.append_msg("<p>Redeem Code will expired on " + coupon.expire_date + ".</p>", true);
+    	  //           		}else if (coupon.state === 'pr' && coupon.single_use){
+							// 	self.append_msg("<p>Redeem Code can not be reedem more than one time.</p>", true);
+							// }
+    	  //           		else{
+    	  //           			self.append_msg("<p>Redeem Code is not available!</p>", true);
+    	  //           		}
+    	  //       		}
+    	  //   			else{
+    	  //   				self.append_msg("<p>Redeem Code does not exist!</p>", true);
+    	  //       		}
+    			// 		//////////////////////////////////////////////////////////
+    			// 	}
+    			// });
     		}
     		else{
     		    // Checks first online if coupon not found then checks online
-    		    var CouponModel = new Model('product.coupon');
+    		    // var CouponModel = new Model('product.coupon');
     			var domain = [['name', 'ilike', vals]];
     			var coupon = this.pos.db.get_coupon_info(vals);
     			if (coupon){
@@ -500,48 +506,48 @@ odoo.define('inceptus-base_redeem.inceptus-base_redeem', function (require) {
             		}
         		}
         		else{
-        		    CouponModel.call('search_read', [domain, ['name', 'product_id', 'rel_product_id', 'amount', 'rem_amount',
-           	        'percentage', 'expire_date', 'state', 'type', 'single_use', 'coupon_type', 'cart_limit', 'partner_id']]).then(function (result) {
-    				if (result && result.length == 1) {
-    					var coupon = result[0];
-    					//////////////////////////////////////////////////////
-    					if (coupon){
-    						self.disable_confirm(true);
-    	        			if (coupon.expire_date && new Date() > new Date(coupon.expire_date)){
-    	            			coupon.state = 'e'
-    	            		}
-    	            		if(coupon.state === 's' || coupon.state === 'pr' && !coupon.single_use){
-    	            			self.append_msg("<p>Redeem Code is valid!</p>", false);
-    	            			self.disable_confirm(false);
-    	            			if(coupon.type === 'f' || coupon.type === 'd'){
-									$('#msgtxt').append(_t("<p>Total Balance : "+ self.format_currency(coupon.amount) +"</p>"+
-											"<p>Available Balance : "+ self.format_currency(coupon.rem_amount) + "</p>"));
-									if (coupon.expire_date){
-										$('#msgtxt').append(_t("<p>Expiry Date : "+ coupon.expire_date + "</p>"));
-									}
-								}else if(coupon.type === 'p'){
-									$('#msgtxt').append(_t("<p>Discount Available : "+ coupon.percentage+"% </p>"));
-									if (coupon.expire_date){
-										$('#msgtxt').append(_t("<p>Expiry Date : "+ coupon.expire_date + "</p>"));
-									}
-								}
-    	            		}else if(coupon.state === 'r'){
-    	            			self.append_msg("<p>Redeem Code already reedemed!</p>", true);
-    	            		}else if(coupon.state === 'e'){
-    	            			self.append_msg("<p>Redeem Code is expired on " + coupon.expire_date + ".</p>", true);
-    	            		}else if (coupon.state === 'pr' && coupon.single_use){
-								self.append_msg("<p>Redeem Code can not be reedem more than one time.</p>", true);
-							}
-    	            		else{
-    	            			self.append_msg("<p>Redeem Code is not available!</p>", true);
-    	            		}
-    	        		}
-    	    			else{
-    	    				self.append_msg("<p>Redeem Code does not exist!</p>", true);
-    	        		}
-    					//////////////////////////////////////////////////////////
-    				    }
-    			    });
+       //  		    CouponModel.call('search_read', [domain, ['name', 'product_id', 'rel_product_id', 'amount', 'rem_amount',
+       //     	        'percentage', 'expire_date', 'state', 'type', 'single_use', 'coupon_type', 'cart_limit', 'partner_id']]).then(function (result) {
+    			// 	if (result && result.length == 1) {
+    			// 		var coupon = result[0];
+    			// 		//////////////////////////////////////////////////////
+    			// 		if (coupon){
+    			// 			self.disable_confirm(true);
+    	  //       			if (coupon.expire_date && new Date() > new Date(coupon.expire_date)){
+    	  //           			coupon.state = 'e'
+    	  //           		}
+    	  //           		if(coupon.state === 's' || coupon.state === 'pr' && !coupon.single_use){
+    	  //           			self.append_msg("<p>Redeem Code is valid!</p>", false);
+    	  //           			self.disable_confirm(false);
+    	  //           			if(coupon.type === 'f' || coupon.type === 'd'){
+							// 		$('#msgtxt').append(_t("<p>Total Balance : "+ self.format_currency(coupon.amount) +"</p>"+
+							// 				"<p>Available Balance : "+ self.format_currency(coupon.rem_amount) + "</p>"));
+							// 		if (coupon.expire_date){
+							// 			$('#msgtxt').append(_t("<p>Expiry Date : "+ coupon.expire_date + "</p>"));
+							// 		}
+							// 	}else if(coupon.type === 'p'){
+							// 		$('#msgtxt').append(_t("<p>Discount Available : "+ coupon.percentage+"% </p>"));
+							// 		if (coupon.expire_date){
+							// 			$('#msgtxt').append(_t("<p>Expiry Date : "+ coupon.expire_date + "</p>"));
+							// 		}
+							// 	}
+    	  //           		}else if(coupon.state === 'r'){
+    	  //           			self.append_msg("<p>Redeem Code already reedemed!</p>", true);
+    	  //           		}else if(coupon.state === 'e'){
+    	  //           			self.append_msg("<p>Redeem Code is expired on " + coupon.expire_date + ".</p>", true);
+    	  //           		}else if (coupon.state === 'pr' && coupon.single_use){
+							// 	self.append_msg("<p>Redeem Code can not be reedem more than one time.</p>", true);
+							// }
+    	  //           		else{
+    	  //           			self.append_msg("<p>Redeem Code is not available!</p>", true);
+    	  //           		}
+    	  //       		}
+    	  //   			else{
+    	  //   				self.append_msg("<p>Redeem Code does not exist!</p>", true);
+    	  //       		}
+    			// 		//////////////////////////////////////////////////////////
+    			// 	    }
+    			//     });
         		}
     		}
         },
@@ -638,6 +644,34 @@ odoo.define('inceptus-base_redeem.inceptus-base_redeem', function (require) {
     
     
     screens.ScreenWidget.include({
+        barcode_cashier_action: function(code){
+            var self = this;
+            var employees = this.pos.employees;
+            var prom;
+            for(var i = 0, len = employees.length; i < len; i++){
+                if(employees[i].barcode === Sha1.hash(code.code)){
+                    if (employees[i].id !== this.pos.get_cashier().id && employees[i].pin) {
+                        prom =  this.gui.ask_password(employees[i].pin).then(function(){
+                            self.pos.set_cashier(employees[i]);
+                            self.chrome.widget.username.renderElement();
+                            return true;
+                        });
+                    } else {
+                        this.pos.set_cashier(employees[i]);
+                        this.chrome.widget.username.renderElement();
+                        prom = Promise.resolve(true);
+                    }
+                    break;
+                }
+            }
+            if (!prom){
+                this.barcode_error_action(code);
+                return Promise.resolve(false);
+            }
+            else {
+                return prom
+            }
+        },
     	barcode_product_action: function(code){
     		// removed if condition
     		var self = this;
@@ -704,17 +738,24 @@ odoo.define('inceptus-base_redeem.inceptus-base_redeem', function (require) {
 		render_product: function(product){
 			// everytime render the product template
 			this._super(product);
-			var image_url = this.get_product_image_url(product);
-            var product_html = QWeb.render('Product',{
-                    widget:  this,
-                    product: product,
-                    image_url: this.get_product_image_url(product),
-                });
-            var product_node = document.createElement('div');
-            product_node.innerHTML = product_html;
-            product_node = product_node.childNodes[1];
-            this.product_cache.cache_node(product.id,product_node);
-            return product_node;
+            var current_pricelist = this._get_active_pricelist();
+            var cache_key = this.calculate_cache_key(product, current_pricelist);
+            var cached = this.product_cache.get_node(cache_key);
+            if(!cached){
+                var image_url = this.get_product_image_url(product);
+                var product_html = QWeb.render('Product',{
+                        widget:  this,
+                        product: product,
+                        pricelist: current_pricelist,
+                        image_url: this.get_product_image_url(product),
+                    });
+                var product_node = document.createElement('div');
+                product_node.innerHTML = product_html;
+                product_node = product_node.childNodes[1];
+                this.product_cache.cache_node(cache_key,product_node);
+                return product_node;
+            }
+            return cached;
 		}
 	})
 	
@@ -738,22 +779,6 @@ odoo.define('inceptus-base_redeem.inceptus-base_redeem', function (require) {
 	        return true;
 	    },
 	});
-
-    models.Orderline.include({
-        initialize: function(attr, options) {
-            this.super(attr, options)
-            if (this.coupon){
-                this.coupon = this.coupon;
-            }
-        },
-        set_coupon: function(coupon){
-            this.coupon= coupon;
-            this.trigger('change',this);
-        },
-        get_coupon: function(){
-            return this.coupon;
-        },
-    });
 
 	var _super_orderline = models.Orderline.prototype;
 	models.Orderline = models.Orderline.extend({
@@ -1062,20 +1087,20 @@ odoo.define('inceptus-base_redeem.inceptus-base_redeem', function (require) {
 
 	});
 
-    // screens.PaymentScreenWidget.include({
-    //     click_numpad: function(button) {
-    //         var order = this.pos.get_order();
-    //         var paymentlines = this.pos.get_order().get_paymentlines();
-    //         if (order.selected_paymentline.is_coupon){
-    //             this.gui.show_popup('error',{
-    //                 title: _t('Not Allowed!'),
-    //                 body:  _t('Giftcard Payments can not be altered/removed!'),
-    //             });
-				// return;
-    //         }
-    //         this._super(button);
-    //     },
-    // });
+    screens.PaymentScreenWidget.include({
+        click_numpad: function(button) {
+            var order = this.pos.get_order();
+            var paymentlines = this.pos.get_order().get_paymentlines();
+            if (order.selected_paymentline.is_coupon){
+                this.gui.show_popup('error',{
+                    title: _t('Not Allowed!'),
+                    body:  _t('Giftcard Payments can not be altered/removed!'),
+                });
+				return;
+            }
+            this._super(button);
+        },
+    });
 
     screens.ActionpadWidget.include({
         renderElement: function() {
